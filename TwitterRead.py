@@ -25,6 +25,9 @@ class FilteredTweet:  # Class to store the clean Tweet data.
         elif self.sentiment == 0:
             self.sentiment = -1
 
+    def setIndex(self, the_index):  # Method will set the index.  Called when new clean tweet is written.
+        self.index = the_index
+		
 def filterRelevant(tweet_dict):
     if 'isRelevant' in tweet_dict:
         return tweet_dict['isRelevant'] == 1
@@ -81,6 +84,7 @@ for js in json_files:
                 try:
                     if filterTweet(tweet_dict):  # Filter the tweet.
                         new_tweet = FilteredTweet(tweet_dict)  # Create a new filtered tweet.
+                        new_tweet.setIndex(index_clean)  # Set the index.
                         new_tweet_json = json.dumps(
                             new_tweet.__dict__)  # Create a new json object from the clean tweet.
                         clean_tweet_json = json.dumps(new_tweet.__dict__, indent=4)
