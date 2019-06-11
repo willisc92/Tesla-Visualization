@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+      <script src="https://d3js.org/topojson.v1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+      <script src="d3.slider.js"></script>
+      <link rel="stylesheet" href="d3.slider.css" />
+      <style>
+
+         path {
+         fill: none;
+         stroke: #333;
+         stroke-width: .5px;
+         }
+
+         .land-boundary {
+         stroke-width: 1px;
+         }
+
+         .county-boundary {
+         stroke: #ddd;
+         }
+
+         .site {
+            stroke-width: .5px;
+         stroke: #333;
+         fill: #9cf;
+         }
+
+         #slider3 {
+         margin: 20px 0 10px 20px;
+         width: 900px;
+         }
+
+      </style>
+      
+   </head>
+
+   <body>
+      <svg></svg>
+      <div id="slider3"></div>
+
+
+      <script>
+         const width = 960;
+         const height = 500;
+         
+         <!-- "Configure speed and tilt"  -->
+         const config = {
+            speed: 0.005,
+            verticalTilt: -30,
+            horizontalTilt: 0
+         }
+
+         <!-- "Locations array to parse json object into"  -->
+         let locations = [];
+         const svg = d3.select('svg')
+               .attr('width', width).attr('height', height);
+
+         <!-- "g tag denotes marker group"  -->
+         const markerGroup = svg.append('g');
+
+         <!-- "Create orthographic projection of globe"  -->
+         const projection = d3.geoOrthographic();
+         const initialScale = projection.scale();
+
+         <!-- "Creates geometric path generator with orthographic projection"  -->
+         const path = d3.geoPath().projection(projection);
+         const center = [width/2, height/2];
+
+         drawGlobe();    
+         drawGraticule();
+         enableRotation();    
+
+         <!-- "Draws country boundaries from world-110m.json file, and TESLA tweets from local json file into locations array"  -->
+         function drawGlobe() {  
+               d3.queue()
+                  .defer(d3.json, 'https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')          
+                  .defer(d3.json, 'TESLA_CLEAN_TWEETS_SINGLE_OBJ.json')
+                  .await((error, worldData, locationData) => {
+                     svg.selectAll(".segment")
+                           .data(topojson.feature(worldData, worldData.objects.countries).features)
+                           .enter().append("path")
+                           .attr("class", "segment")
+                           .attr("d", path)
+                           .style("stroke", "#888")
+                           .style("stroke-width", "1px")
+                           .style("fill", (d, i) => "#F2D7D5")
+                           .style("fill-opacity", 0.3);
+                           locations = locationData;
+                           drawMarkers();                   
+                  });
+         }
+
+         <!-- "DRAWS LATITUDE/LONGITUDE LINES ON GLOBE"  -->
+         function drawGraticule() { 
+               const graticule = d3.geoGraticule()
+                  .step([10, 10]);
+
+               svg.append("path")
+                  .datum(graticule)
+                  .attr("class", "graticule")
+                  .attr("d", path)
+                  .style("fill", "#fff")
+                  .style("stroke", "#ccc");
+         }
+
+         <!-- "Rotates projection , all 'dd' attributes, and markers"  -->
+         function enableRotation() {
+               d3.timer(function (elapsed) {
+                  projection.rotate([config.speed * elapsed - 120, config.verticalTilt, config.horizontalTilt]);
+                  svg.selectAll("path").attr("d", path);
+                  drawMarkers();
+               });
+         }        
+
+         <!-- "Draws markers for all points in locations, colors conditionally based on whether it is visible and the sentiment"  -->
+         function drawMarkers() {
+               const markers = markerGroup.selectAll('circle')
+                  .data(locations);
+               markers
+                  .enter()
+                  .append('circle')
+                  .merge(markers)
+                  .attr('cx', d => projection([d.longitude, d.latitude])[0])
+                  .attr('cy', d => projection([d.longitude, d.latitude])[1])
+                  .attr('fill', d => {
+                     const sentiment = d.sentiment;
+                     const coordinate = [d.longitude, d.latitude];
+                     gdistance = d3.geoDistance(coordinate, projection.invert(center));
+                     return gdistance > 1.57 ? 'none' : (sentiment > 0 ? 'steelblue': 'red');
+                  })
+                  .attr('r', 2);
+
+               markerGroup.each(function () {
+                  this.parentNode.appendChild(this);
+               });
+         }
+      </script>
+   </body>
+</html>
