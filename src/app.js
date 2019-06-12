@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import * as topojson from "topojson";
 import * as slider from "d3-simple-slider";
 import * as timeformat from "d3-time-format";
+import numeral from "numeral";
 
 (async function() {
     const minTime = 1545536869108;
@@ -10,6 +11,20 @@ import * as timeformat from "d3-time-format";
     const maxDate = new Date(maxTime);
     let filter_minTime = minTime;
     let filter_maxTime = maxTime;
+
+    const width = 960;
+    const height = 500;
+
+    const config = {
+        speed: 0.005,
+        verticalTilt: -30,
+        horizontalTilt: 0
+    };
+
+    let locations = [];
+    var averagePrice;
+    let priceData = [];
+    let gdistance;
 
     // Range
     var sliderRange = slider
@@ -26,6 +41,7 @@ import * as timeformat from "d3-time-format";
             filter_maxTime = val[1];
             d3.select("p#value-range").text(val.map(timeformat.timeFormat("%x")).join("-"));
             drawMarkers();
+            getAverageStockPrice();
         });
 
     var gRange = d3
@@ -45,21 +61,20 @@ import * as timeformat from "d3-time-format";
             .join("-")
     );
 
-    // Loading external data
-    const width = 960;
-    const height = 500;
-
-    const config = {
-        speed: 0.005,
-        verticalTilt: -30,
-        horizontalTilt: 0
-    };
-
-    let locations = [];
-    let gdistance;
-
+    // IMPORT EXTERNAL DATA
     d3.json("/data/TESLA_CLEAN_TWEETS_SINGLE_OBJ.json").then(function(location_data) {
         locations = location_data;
+    });
+
+    d3.csv("/data/TSLA.csv").then(function(stock_data) {
+        priceData = stock_data.map(function(row) {
+            let rowDate = new Date(row.Date);
+            return {
+                price: parseFloat(row.Close),
+                date: rowDate
+            };
+        });
+        getAverageStockPrice();
     });
 
     const svg = d3
@@ -79,6 +94,37 @@ import * as timeformat from "d3-time-format";
     drawGraticule();
     enableRotation();
     drawMarkers();
+
+    function getAverageStockPrice() {
+        let rowsInDateRange = [];
+
+        priceData.forEach(function(row) {
+            if (row.date >= new Date(filter_minTime) && row.date <= new Date(filter_maxTime)) {
+                return rowsInDateRange.push(row);
+            }
+        });
+
+        let total = 0;
+        let counter = 0;
+        if (rowsInDateRange.length === 0) {
+            return;
+        }
+
+        rowsInDateRange.forEach(function(row) {
+            total += row.price;
+            counter += 1;
+        });
+
+        averagePrice = total / counter;
+
+        d3.select("h3#avg-stock-price").text(
+            "Average Stock Price: ".concat(
+                numeral(averagePrice)
+                    .format("$0,0.00")
+                    .toString()
+            )
+        );
+    }
 
     function drawGlobe() {
         d3.json("data/world-110m.json").then(function(worldData) {
