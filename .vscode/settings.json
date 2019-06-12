@@ -1,0 +1,15 @@
+{
+    // Set the default
+    "editor.formatOnSave": true,
+    "prettier.printWidth": 120,
+    "prettier.tabWidth": 4,
+    "prettier.arrowParens": "always",
+    "editor.rulers": [120],
+    "python.pythonPath": "C:\\Users\\willi\\.virtualenvs\\backend-MvG9KH2v",
+
+    "team.showWelcomeMessage": false,
+    "python.linting.pep8Enabled": false,
+    "python.linting.pylintPath": "C:\\Users\\willi\\.virtualenvs\\backend-MvG9KH2v\\Scripts\\pylint",
+    "python.linting.pylintArgs": ["--load-plugins", "pylint_django"],
+    "python.linting.pylintEnabled": true
+}

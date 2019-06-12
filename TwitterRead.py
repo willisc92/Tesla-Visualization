@@ -75,6 +75,8 @@ path_to_json = "G:\\Users\\Willis\\Documents\\MENG_Software\\ENEL 645\\Visualiza
 json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
 output_filename = "TESLA_CLEAN_TWEETS.json"  # Name of clean .json file to write to.  Will have 1 clean tweet per line of file.
 list_clean_tweets = []
+min_timestamp = 1560293741*1000  
+max_timestamp = 0
 
 print("Beginning processing...")
 for js in json_files:
@@ -90,6 +92,11 @@ for js in json_files:
                         
                         new_tweet_dict = new_tweet.__dict__
                         list_clean_tweets.append(new_tweet_dict)
+
+                        if (int(new_tweet_dict['timestamp']) < int(min_timestamp)):
+                            min_timestamp = new_tweet_dict['timestamp']
+                        if (int(new_tweet_dict['timestamp']) > int(max_timestamp)):
+                            max_timestamp = new_tweet_dict['timestamp']
 
                         # new_tweet_json = json.dumps(
                             # new_tweet.__dict__)  # Create a new json object from the clean tweet.
@@ -115,3 +122,5 @@ print("Total clean tweets written from file: ", index_clean - 1)
 print("Total tweets evaluated from file: ", num_eval)
 end_time = time.time()
 print("Time of execution in seconds:", end_time - start_time)
+print("min_timestamp", min_timestamp)
+print("max_timestamp", max_timestamp)
