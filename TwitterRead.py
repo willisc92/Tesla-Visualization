@@ -2,15 +2,19 @@ import json
 import sys
 import time
 import os
-import pandas as pd 
+import pandas as pd
+
 
 class FilteredTweet:  # Class to store the clean Tweet data.
     def __init__(self, tweet_dict):
+        self.createdAt = tweet_dict['created_at']
         self.user_ID = tweet_dict['user']['id_str']
         self.screen_name = tweet_dict['user']['screen_name']
         self.country = tweet_dict['place']['country']
-        self.longitude = float(tweet_dict['place']['bounding_box']['coordinates'][0][0][0])
-        self.latitude = float(tweet_dict['place']['bounding_box']['coordinates'][0][0][1])
+        self.longitude = float(
+            tweet_dict['place']['bounding_box']['coordinates'][0][0][0])
+        self.latitude = float(
+            tweet_dict['place']['bounding_box']['coordinates'][0][0][1])
         self.sentiment = tweet_dict['sentiment']
         self.text = tweet_dict['text']
         self.timestamp = tweet_dict['timestamp_ms']
@@ -26,14 +30,17 @@ class FilteredTweet:  # Class to store the clean Tweet data.
         elif self.sentiment == 0:
             self.sentiment = -1
 
-    def setIndex(self, the_index):  # Method will set the index.  Called when new clean tweet is written.
+    # Method will set the index.  Called when new clean tweet is written.
+    def setIndex(self, the_index):
         self.index = the_index
-		
+
+
 def filterRelevant(tweet_dict):
     if 'isRelevant' in tweet_dict:
         return tweet_dict['isRelevant'] == 1
     else:
         return False
+
 
 def filterSentiment(tweet_dict):    # Filter out tweet for positive(+2) and negative(0)
     if 'sentiment' in tweet_dict:
@@ -41,14 +48,17 @@ def filterSentiment(tweet_dict):    # Filter out tweet for positive(+2) and nega
     else:
         return False
 
+
 def filterTweet(tweet_dict):
     return (filterRelevant(tweet_dict) and filterSentiment(tweet_dict) and hasCountry(tweet_dict))
+
 
 def hasCountry(tweet_dict):
     if tweet_dict['place'] is not None:
         return tweet_dict['place']['country'] is not None
     else:
         return False
+
 
 class Logger(object):
     def __init__(self, file_name):
@@ -70,26 +80,31 @@ start_time = time.time()
 
 sys.stdout = Logger("TESLA_CLEAN_TWEETS_OUTPUT_LOG.txt")
 index_clean = 1
-num_eval = 0 
+num_eval = 0
 path_to_json = "G:\\Users\\Willis\\Documents\\MENG_Software\\ENEL 645\\Visualization"
-json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-output_filename = "TESLA_CLEAN_TWEETS.json"  # Name of clean .json file to write to.  Will have 1 clean tweet per line of file.
+json_files = [pos_json for pos_json in os.listdir(
+    path_to_json) if pos_json.endswith('.json')]
+# Name of clean .json file to write to.  Will have 1 clean tweet per line of file.
+output_filename = "TESLA_CLEAN_TWEETS.json"
 list_clean_tweets = []
-min_timestamp = 1560293741*1000  
+min_timestamp = 1560293741*1000
 max_timestamp = 0
 
 print("Beginning processing...")
 for js in json_files:
     with open(os.path.join(path_to_json, js), 'r', encoding='utf8', errors='ignore') as f:  # Open input file
         with open(output_filename, 'a', encoding='utf8') as outputFile:  # Open output file
-            for (i, line) in enumerate(f, 1):  # Iterate through each line in input file.
+            # Iterate through each line in input file.
+            for (i, line) in enumerate(f, 1):
                 try:
-                    tweet_dict = json.loads(line)  # Load the .json object into a dictionary.
+                    # Load the .json object into a dictionary.
+                    tweet_dict = json.loads(line)
                     num_eval += 1
                     if filterTweet(tweet_dict):  # Filter the tweet.
-                        new_tweet = FilteredTweet(tweet_dict)  # Create a new filtered tweet.
+                        # Create a new filtered tweet.
+                        new_tweet = FilteredTweet(tweet_dict)
                         new_tweet.setIndex(index_clean)  # Set the index.
-                        
+
                         new_tweet_dict = new_tweet.__dict__
                         list_clean_tweets.append(new_tweet_dict)
 

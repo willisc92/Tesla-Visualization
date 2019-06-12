@@ -5,7 +5,7 @@
     "prettier.tabWidth": 4,
     "prettier.arrowParens": "always",
     "editor.rulers": [120],
-    "python.pythonPath": "C:\\Users\\willi\\.virtualenvs\\backend-MvG9KH2v",
+    "python.pythonPath": "C:\\Users\\willi\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
 
     "team.showWelcomeMessage": false,
     "python.linting.pep8Enabled": false,
