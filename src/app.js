@@ -64,6 +64,7 @@ import numeral from "numeral";
     // IMPORT EXTERNAL DATA
     d3.json("/data/TESLA_CLEAN_TWEETS_SINGLE_OBJ.json").then(function(location_data) {
         locations = location_data;
+        console.log(locations);
     });
 
     d3.csv("/data/TSLA.csv").then(function(stock_data) {
@@ -74,6 +75,7 @@ import numeral from "numeral";
                 date: rowDate
             };
         });
+        console.log(priceData);
         getAverageStockPrice();
     });
 
@@ -124,6 +126,17 @@ import numeral from "numeral";
                     .toString()
             )
         );
+    }
+
+    function getMajoritySentiment() {
+        /*
+         TODO: Iterate through each row in "locations" array and check if within filter range. 
+         Get the majority sentiment (sum and evalute if positive or negative) and render it as an element with d3.
+         If you want - assign some categories for ratios of positive/negative tweets (ex: strongly positive, strongly negative,
+         slightly positive, slightly negative)
+
+         See the getAverageStockPrice method for reference.
+        */
     }
 
     function drawGlobe() {
