@@ -1,1 +1,23 @@
 // Import styles here
+.navigation-bar {
+    width: 100%;  /* i'm assuming full width */
+    height: 100px; /* change it to desired width */
+    background-color: red; /* change to desired color */
+}
+.logo {
+    display: inline-block;
+    vertical-align: top;
+    width: 9%;
+    height: 100%;
+    margin-left: 20px;/* if you want it vertically middle of the navbar. */
+}
+
+.navigation-bar > div {
+    display: inline-block;
+    vertical-align: top; 
+    color: white;
+    margin-left: 10px;
+    height: 100%;        /* if you want it to take the full height of the bar*/
+    font-size: 35px;
+    line-height: 80%;
+}
