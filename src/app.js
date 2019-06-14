@@ -25,6 +25,7 @@ import numeral from "numeral";
     var averagePrice;
     let priceData = [];
     let gdistance;
+    
 
     // Range
     var sliderRange = slider
@@ -42,6 +43,8 @@ import numeral from "numeral";
             d3.select("p#value-range").text(val.map(timeformat.timeFormat("%x")).join("-"));
             drawMarkers();
             getAverageStockPrice();
+            getMajoritySentiment();
+            getRandomTweet();
         });
 
     var gRange = d3
@@ -64,7 +67,11 @@ import numeral from "numeral";
     // IMPORT EXTERNAL DATA
     d3.json("/data/TESLA_CLEAN_TWEETS_SINGLE_OBJ.json").then(function(location_data) {
         locations = location_data;
+        getMajoritySentiment();
+
         console.log(locations);
+        getRandomTweet();
+        
     });
 
     d3.csv("/data/TSLA.csv").then(function(stock_data) {
@@ -119,6 +126,7 @@ import numeral from "numeral";
 
         averagePrice = total / counter;
 
+
         d3.select("h3#avg-stock-price").text(
             "Average Stock Price: ".concat(
                 numeral(averagePrice)
@@ -128,15 +136,73 @@ import numeral from "numeral";
         );
     }
 
-    function getMajoritySentiment() {
-        /*
-         TODO: Iterate through each row in "locations" array and check if within filter range. 
-         Get the majority sentiment (sum and evalute if positive or negative) and render it as an element with d3.
-         If you want - assign some categories for ratios of positive/negative tweets (ex: strongly positive, strongly negative,
-         slightly positive, slightly negative)
+    function getRandomTweet() {
+        let randomtweets=[];
+        let oddcount = 0;
+        let evencount = 0;
+        locations.forEach(function (row) {
+            if (row.timestamp >= filter_minTime && row.timestamp <= filter_maxTime && row.sentiment === 1) {
+                return randomtweets.push(row.text);
 
-         See the getAverageStockPrice method for reference.
-        */
+            }
+            else if (row.timestamp >= filter_minTime && row.timestamp <= filter_maxTime && row.sentiment === -1) {
+                return randomtweets.push(row.text);
+            }
+        });
+        
+        var filtered = randomtweets.slice(0, 10);
+
+        d3.select("ul#items").selectAll('li').data(filtered);
+        
+           
+
+    }
+
+    function sentimentCheck(positive, negative) {
+
+        if (positive > negative) {
+            if (positive > 2 * negative) {
+                return "Strongly Positive";
+            }
+            else {
+                return "Positive";
+            }
+        }
+        else if (positive === negative) {
+            return "Neutral";
+        }
+        else {
+            if (negative > 2 * positive) {
+                return "Strongly Negative";
+            }
+            else {
+                return "Negative";
+            }
+        }
+    }
+
+    function getMajoritySentiment() {
+        let positive = 0;
+        let negative = 0;
+        locations.forEach(function (row) {
+            if (row.timestamp >= filter_minTime && row.timestamp <= filter_maxTime) {
+                if (row.sentiment > 0) {
+                    positive += 1;
+                }
+                if (row.sentiment < 0) {
+                    negative += 1;
+                }
+            }
+                   });
+        
+        let sentiment = "";
+        sentiment = sentimentCheck(positive, negative);
+
+
+
+        d3.select("h3#majority-sentiment").text(
+            "Overall Sentiment: ".concat(sentiment).toString());
+
     }
 
     function drawGlobe() {
