@@ -150,9 +150,9 @@ import numeral from "numeral";
             }
         });
         
-        var filtered = randomtweets.slice(0, 10);
+        var filtered = randomtweets.slice(300,305 );
 
-        d3.select("ul#items").selectAll('li').data(filtered);
+        d3.select("ul#items").data(filtered).enter().append("li").text(function (i) { return i; });
         
            
 
