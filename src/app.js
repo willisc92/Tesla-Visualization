@@ -35,7 +35,7 @@ import numeral from "numeral";
         .tickFormat(timeformat.timeFormat("%x"))
         .ticks(5)
         .default([minDate, maxDate])
-        .fill("#2196f3")
+        .fill("red")
         .on("onchange", (val) => {
             filter_minTime = val[0];
             filter_maxTime = val[1];
@@ -176,6 +176,26 @@ import numeral from "numeral";
         }
     }
 
+    function mapSentimentToColor(sentiment) {
+        switch (sentiment) {
+            case "Strongly Positive": {
+                return "blue";
+            }
+            case "Positive": {
+                return "green";
+            }
+            case "Negative": {
+                return "orange";
+            }
+            case "Strongly Negative": {
+                return "red";
+            }
+            default: {
+                return "black";
+            }
+        }
+    }
+
     function getMajoritySentiment() {
         let positive = 0;
         let negative = 0;
@@ -192,7 +212,7 @@ import numeral from "numeral";
 
         let sentiment = "";
         sentiment = sentimentCheck(positive, negative);
-        d3.select("h3#majority-sentiment").text("Overall Sentiment: ".concat(sentiment).toString());
+        d3.select("h3#majority-sentiment").text("Overall Sentiment: ".concat(sentiment));
     }
 
     function drawGlobe() {
@@ -205,7 +225,7 @@ import numeral from "numeral";
                 .attr("d", path)
                 .style("stroke", "#888")
                 .style("stroke-width", "1px")
-                .style("fill", (d, i) => "#F2D7D5")
+                .style("fill", (d, i) => "#00b300")
                 .style("fill-opacity", 0.3);
         });
     }
