@@ -212,7 +212,11 @@ import numeral from "numeral";
 
         let sentiment = "";
         sentiment = sentimentCheck(positive, negative);
-        d3.select("h3#majority-sentiment").text("Overall Sentiment: ".concat(sentiment));
+        d3.select("h3#majority-sentiment")
+            .text("Overall Sentiment: ")
+            .append("tspan")
+            .text(sentiment)
+            .style("color", mapSentimentToColor(sentiment));
     }
 
     function drawGlobe() {
@@ -223,7 +227,7 @@ import numeral from "numeral";
                 .append("path")
                 .attr("class", "segment")
                 .attr("d", path)
-                .style("stroke", "#888")
+                .style("stroke", "black")
                 .style("stroke-width", "1px")
                 .style("fill", (d, i) => "#00b300")
                 .style("fill-opacity", 0.3);
