@@ -39,7 +39,7 @@ import numeral from "numeral";
         .on("onchange", (val) => {
             filter_minTime = val[0];
             filter_maxTime = val[1];
-            d3.select("p#value-range").text(val.map(timeformat.timeFormat("%x")).join("-"));
+            redrawDates();
             drawMarkers();
             getAverageStockPrice();
             getMajoritySentiment();
@@ -55,13 +55,6 @@ import numeral from "numeral";
         .attr("transform", "translate(30,30)");
 
     gRange.call(sliderRange);
-
-    d3.select("p#value-range").text(
-        sliderRange
-            .value()
-            .map(timeformat.timeFormat("%x"))
-            .join("-")
-    );
 
     // IMPORT EXTERNAL DATA
     d3.json("/data/TESLA_CLEAN_TWEETS_SINGLE_OBJ.json").then(function(location_data) {
@@ -101,6 +94,19 @@ import numeral from "numeral";
     drawGraticule();
     enableRotation();
     drawMarkers();
+    redrawDates();
+
+    function redrawDates() {
+        d3.select("p#value-range")
+            .text("Dates: ")
+            .append("tspan")
+            .text(
+                sliderRange
+                    .value()
+                    .map(timeformat.timeFormat("%x"))
+                    .join("-")
+            );
+    }
 
     function getAverageStockPrice() {
         let rowsInDateRange = [];
