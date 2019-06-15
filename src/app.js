@@ -156,6 +156,7 @@ import numeral from "numeral";
         d3.selectAll("li").remove();
 
         d3.select("ul#items")
+            .selectAll('li')
             .data(filtered)
             .enter()
             .append("li")
