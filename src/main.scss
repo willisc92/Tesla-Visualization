@@ -1,4 +1,12 @@
 // Import styles here
+* {
+    box-sizing: border-box;
+}
+
+.html {
+    font-size: 62.5%;
+}
+
 .navigation-bar {
     width: 100%; /* i'm assuming full width */
     height: 100px; /* change it to desired width */
@@ -7,8 +15,8 @@
 .logo {
     display: inline-block;
     vertical-align: top;
-    width: 9%;
-    height: 100%;
+    width: 85.3px;
+    height: 100px;
     margin-left: 20px; /* if you want it vertically middle of the navbar. */
 }
 
@@ -33,7 +41,12 @@
 }
 
 .spread_elements {
-    align-items: center;
+    align-items: left;
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+
+    @media (min-width: 150rem) {
+        flex-direction: row;
+    }
 }

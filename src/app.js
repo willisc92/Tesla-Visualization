@@ -12,7 +12,7 @@ import numeral from "numeral";
     let filter_minTime = minTime;
     let filter_maxTime = maxTime;
 
-    const width = 960 / 1.3;
+    const width = 960;
     const height = 500;
 
     const config = {
@@ -142,8 +142,6 @@ import numeral from "numeral";
 
     function getRandomTweet() {
         let randomtweets = [];
-        let oddcount = 0;
-        let evencount = 0;
         locations.forEach(function(row) {
             if (row.timestamp >= filter_minTime && row.timestamp <= filter_maxTime && row.sentiment === 1) {
                 return randomtweets.push(row.text);
@@ -157,7 +155,7 @@ import numeral from "numeral";
         d3.selectAll("li").remove();
 
         d3.select("ul#items")
-            .selectAll('li')
+            .selectAll("li")
             .data(filtered)
             .enter()
             .append("li")
