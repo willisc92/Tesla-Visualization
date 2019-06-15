@@ -12,7 +12,7 @@ import numeral from "numeral";
     let filter_minTime = minTime;
     let filter_maxTime = maxTime;
 
-    const width = 960;
+    const width = 960 / 1.3;
     const height = 500;
 
     const config = {
@@ -80,7 +80,8 @@ import numeral from "numeral";
     const svg = d3
         .select("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .attr("transform", "translate(-119.23,0)");
 
     const markerGroup = svg.append("g");
 
