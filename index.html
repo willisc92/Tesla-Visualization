@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<nav class="navigation-bar">
+  <img class="logo" src="logo.PNG">
+  <div>
+    <p>Tesla Sentiment Dashboard</p>
+  </div>
+</nav>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TESLA VISUALIZATION</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css">
+  <link href="/dist/main.bundle.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="content-container">
+        <h3 id="avg-stock-price"></h3>
+    </div>
+    <div class="content-container">
+    <div class="spread_elements">
+        <svg></svg>
+        <div>
+        <h3 align="left"><span><img class="twitter-logo" src="twitter.PNG">
+ </span>Twitter Feed:</h3>
+        <ul id="items" align="left" width="200"></ul>
+        </div>
+    </div>
+    </div>
+    
+    
+    <div class="content-container">
+        <div>
+            <p id="value-range"></p>
+        </div>
+        <div id="slider-range"></div>
+    </div>
+    <div class="content-container">
+        <h3 id="majority-sentiment"></h3>
+    </div>
+
+    <script type="text/javascript" src="/dist/app.bundle.js"></script>
+</body>
+
+</html>
