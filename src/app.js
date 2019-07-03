@@ -3,6 +3,7 @@ import * as topojson from "topojson";
 import * as slider from "d3-simple-slider";
 import * as timeformat from "d3-time-format";
 import numeral from "numeral";
+("use strict");
 
 (async function() {
     const minTime = 1545536869108;
@@ -56,27 +57,6 @@ import numeral from "numeral";
 
     gRange.call(sliderRange);
 
-    // IMPORT EXTERNAL DATA
-    d3.json("/data/TESLA_CLEAN_TWEETS_SINGLE_OBJ.json").then(function(location_data) {
-        locations = location_data;
-        getMajoritySentiment();
-
-        console.log(locations);
-        getRandomTweet();
-    });
-
-    d3.csv("/data/TSLA.csv").then(function(stock_data) {
-        priceData = stock_data.map(function(row) {
-            let rowDate = new Date(row.Date);
-            return {
-                price: parseFloat(row.Close),
-                date: rowDate
-            };
-        });
-        console.log(priceData);
-        getAverageStockPrice();
-    });
-
     const svg = d3
         .select("svg")
         .attr("width", width)
@@ -91,11 +71,35 @@ import numeral from "numeral";
     const path = d3.geoPath().projection(projection);
     const center = [width / 2, height / 2];
 
+    importData();
     drawGlobe();
     drawGraticule();
     enableRotation();
     drawMarkers();
     redrawDates();
+
+    // IMPORT EXTERNAL DATA
+    function importData() {
+        d3.json("data/TESLA_CLEAN_TWEETS_SINGLE_OBJ.json").then(function(location_data) {
+            locations = location_data;
+            getMajoritySentiment();
+
+            console.log(locations);
+            getRandomTweet();
+        });
+
+        d3.csv("data/TSLA.csv").then(function(stock_data) {
+            priceData = stock_data.map(function(row) {
+                let rowDate = new Date(row.Date);
+                return {
+                    price: parseFloat(row.Close),
+                    date: rowDate
+                };
+            });
+            console.log(priceData);
+            getAverageStockPrice();
+        });
+    }
 
     function redrawDates() {
         d3.select("p#value-range")

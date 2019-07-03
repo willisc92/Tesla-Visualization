@@ -3,9 +3,12 @@
     "version": "1.0.0",
     "description": "Basic D3.js project for learning purposes",
     "main": "src/app.js",
+    "homepage": "https://willisc92.github.io/Tesla-Visualization/",
     "scripts": {
         "start": "./node_modules/.bin/webpack-dev-server --hot --inline --progress",
-        "build": "webpack -p --config webpack.prod.config.js --hide-modules"
+        "build": "webpack -d --config webpack.prod.config.js --hide-modules",
+        "predeploy": "yarn run build",
+        "deploy": "gh-pages -d dist"
     },
     "repository": {
         "type": "git",
@@ -14,16 +17,12 @@
     "keywords": [
         "d3js"
     ],
-    "author": "Will Soares",
+    "author": "Willis Cheung",
     "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/willamesoares/learn-d3/issues"
-    },
-    "homepage": "https://github.com/willamesoares/learn-d3#readme",
     "devDependencies": {
-        "babel-core": "^6.25.0",
-        "babel-loader": "^7.1.1",
-        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-core": "^6.26.3",
+        "babel-loader": "7",
+        "babel-polyfill": "^6.26.0",
         "babel-preset-es2015": "^6.24.1",
         "babel-preset-stage-0": "^6.24.1",
         "copy-webpack-plugin": "^4.0.1",
@@ -41,6 +40,7 @@
         "d3": "^5",
         "d3-simple-slider": "^1.5.2",
         "d3-time-format": "^2.1.3",
+        "gh-pages": "^2.0.1",
         "moment": "^2.24.0",
         "numeral": "^2.0.6",
         "topojson": "^3.0.2"
